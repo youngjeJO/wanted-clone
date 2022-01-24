@@ -1,0 +1,13 @@
+.slide {
+  overflow-x: hidden;
+}
+
+.slide_list {
+  display: flex;
+  padding-left: 0;
+}
+
+.slide_item {
+  list-style: none;
+  padding: 0 10px;
+}
