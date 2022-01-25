@@ -82,10 +82,23 @@ const Slide = (props) => {
 
   const slideItem = useRef(null);
   const slideList = useRef(null);
+  const interval = useRef(null);
 
   useEffect(() => {
     setSlideWidth(slideItem.current.getBoundingClientRect().width);
-  });
+    clearInterval(interval.current);
+    let nextIndex2;
+    interval.current = setInterval(() => {
+      slideList.current.style.transition = '200ms';
+      nextIndex2 = currentIndex + 1;
+      setCurrentIndex(nextIndex2);
+      setTimeout(() => {
+        slideList.current.style.transition = '0s';
+        nextIndex2 = currentIndex === slideImg.length - 3 ? 2 : nextIndex2;
+        setCurrentIndex(nextIndex2);
+      }, 300);
+    }, 2000);
+  }, [currentIndex]);
 
   const slidelist = slideImg.map((item) => (
     <li className='slide_item' ref={slideItem} key={item.id}>
