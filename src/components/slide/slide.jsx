@@ -79,25 +79,50 @@ const Slide = (props) => {
   const [currentIndex, setCurrentIndex] = useState(2);
   const [slideWidth, setSlideWidth] = useState(0);
   const innerWidth = window.innerWidth;
-  console.log(innerWidth);
+
   const slideItem = useRef(null);
   const slideList = useRef(null);
 
   useEffect(() => {
-    console.log(slideItem.current.getBoundingClientRect().width);
     setSlideWidth(slideItem.current.getBoundingClientRect().width);
-    console.log(slideWidth);
   });
+
   const slidelist = slideImg.map((item) => (
     <li className='slide_item' ref={slideItem} key={item.id}>
       <img className='slide_img' src={item.image} alt='' />
     </li>
   ));
 
+  const changeImg = (e) => {
+    console.log(e.target.className.includes('btn_pre'));
+    let nextIndex = e.target.className.includes('btn_pre')
+      ? currentIndex - 1
+      : currentIndex + 1;
+    console.log(nextIndex);
+    console.log(slideImg.length);
+    // 인덱스가 -1이 되면 slideImg.length -1
+    //  slideImg.length가 되면 인덱스 0
+
+    console.log(slideList.current);
+    slideList.current.style.transition = '200ms';
+    setCurrentIndex(nextIndex);
+    setTimeout(() => {
+      slideList.current.style.transition = '0s';
+      nextIndex =
+        nextIndex < 2
+          ? slideImg.length - 3
+          : nextIndex === slideImg.length - 2
+          ? 2
+          : nextIndex;
+      setCurrentIndex(nextIndex);
+    }, 500);
+  };
+
   return (
     <div className='slide'>
       <ul
         className='slide_list'
+        ref={slideList}
         style={{
           transform: `translateX(calc(${(innerWidth - slideWidth) / 2}px - ${
             slideWidth * currentIndex
@@ -106,6 +131,12 @@ const Slide = (props) => {
       >
         {slidelist}
       </ul>
+      <button className='btn btn_pre' onClick={changeImg}>
+        이전
+      </button>
+      <button className='btn btn_next' onClick={changeImg}>
+        다음
+      </button>
     </div>
   );
 };
