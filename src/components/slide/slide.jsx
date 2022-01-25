@@ -84,19 +84,27 @@ const Slide = (props) => {
   const slideList = useRef(null);
   const interval = useRef(null);
 
+  const img_change = (nextIndex) => {
+    slideList.current.style.transition = '200ms';
+    setCurrentIndex(nextIndex);
+    setTimeout(() => {
+      slideList.current.style.transition = '0s';
+      nextIndex =
+        nextIndex < 2
+          ? slideImg.length - 3
+          : nextIndex === slideImg.length - 2
+          ? 2
+          : nextIndex;
+      setCurrentIndex(nextIndex);
+    }, 500);
+  };
   useEffect(() => {
     setSlideWidth(slideItem.current.getBoundingClientRect().width);
     clearInterval(interval.current);
-    let nextIndex2;
+    let nextIndex;
     interval.current = setInterval(() => {
-      slideList.current.style.transition = '200ms';
-      nextIndex2 = currentIndex + 1;
-      setCurrentIndex(nextIndex2);
-      setTimeout(() => {
-        slideList.current.style.transition = '0s';
-        nextIndex2 = currentIndex === slideImg.length - 3 ? 2 : nextIndex2;
-        setCurrentIndex(nextIndex2);
-      }, 300);
+      nextIndex = currentIndex + 1;
+      img_change(nextIndex);
     }, 2000);
   }, [currentIndex]);
 
@@ -117,18 +125,19 @@ const Slide = (props) => {
     //  slideImg.length가 되면 인덱스 0
 
     console.log(slideList.current);
-    slideList.current.style.transition = '200ms';
-    setCurrentIndex(nextIndex);
-    setTimeout(() => {
-      slideList.current.style.transition = '0s';
-      nextIndex =
-        nextIndex < 2
-          ? slideImg.length - 3
-          : nextIndex === slideImg.length - 2
-          ? 2
-          : nextIndex;
-      setCurrentIndex(nextIndex);
-    }, 500);
+    img_change(nextIndex);
+    // slideList.current.style.transition = '200ms';
+    // setCurrentIndex(nextIndex);
+    // setTimeout(() => {
+    //   slideList.current.style.transition = '0s';
+    //   nextIndex =
+    //     nextIndex < 2
+    //       ? slideImg.length - 3
+    //       : nextIndex === slideImg.length - 2
+    //       ? 2
+    //       : nextIndex;
+    //   setCurrentIndex(nextIndex);
+    // }, 500);
   };
 
   return (
