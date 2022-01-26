@@ -126,18 +126,6 @@ const Slide = (props) => {
 
     console.log(slideList.current);
     img_change(nextIndex);
-    // slideList.current.style.transition = '200ms';
-    // setCurrentIndex(nextIndex);
-    // setTimeout(() => {
-    //   slideList.current.style.transition = '0s';
-    //   nextIndex =
-    //     nextIndex < 2
-    //       ? slideImg.length - 3
-    //       : nextIndex === slideImg.length - 2
-    //       ? 2
-    //       : nextIndex;
-    //   setCurrentIndex(nextIndex);
-    // }, 500);
   };
 
   return (
