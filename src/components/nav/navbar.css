@@ -15,14 +15,13 @@
   margin: 0;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
   list-style: none;
-
   font-weight: bold;
 }
 
 .logo > ul > li {
-  font-size: 30px;
+  padding: 0 5px;
+  font-size: 22px;
 }
 
 .logo > ul > li:last-child {
@@ -34,6 +33,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  font-size: 14px;
   font-weight: bold;
 }
 
@@ -44,7 +44,8 @@
 .navMain > ul > li > span {
   position: relative;
   color: rgb(149, 149, 238);
-  font-size: 16px;
+  font-size: 10px;
+  font-weight: normal;
   top: -7px;
 }
 p {
@@ -55,6 +56,8 @@ p {
   display: flex;
   flex-direction: row;
   list-style: none;
+  font-size: 14px;
+
   font-weight: bold;
 }
 
@@ -68,5 +71,6 @@ p {
   font-weight: unset;
   color: gray;
   border: 1px solid lightgray;
+  font-size: 14px;
   border-radius: 40px;
 }

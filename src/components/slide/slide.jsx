@@ -83,7 +83,6 @@ const Slide = (props) => {
   const slideItem = useRef(null);
   const slideList = useRef(null);
   const interval = useRef(null);
-
   const img_change = (nextIndex) => {
     slideList.current.style.transition = '200ms';
     setCurrentIndex(nextIndex);
@@ -128,11 +127,26 @@ const Slide = (props) => {
     img_change(nextIndex);
   };
 
+  const MouseOver = () => {
+    clearInterval(interval.current);
+    console.log('in');
+  };
+  const MouseLeave = () => {
+    clearInterval(interval.current);
+    let nextIndex;
+    interval.current = setInterval(() => {
+      nextIndex = currentIndex + 1;
+      img_change(nextIndex);
+    }, 2000);
+    console.log('out');
+  };
   return (
     <div className='slide'>
       <ul
         className='slide_list'
         ref={slideList}
+        onMouseOver={MouseOver}
+        onMouseLeave={MouseLeave}
         style={{
           transform: `translateX(calc(${(innerWidth - slideWidth) / 2}px - ${
             slideWidth * currentIndex
