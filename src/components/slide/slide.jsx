@@ -99,6 +99,15 @@ const Slide = (props) => {
   };
   useEffect(() => {
     setSlideWidth(slideItem.current.getBoundingClientRect().width);
+    const slideImages = slideList.current.querySelectorAll('.slide_item');
+    console.log(slideImages);
+    slideImages.forEach((item, index) => {
+      if (index === currentIndex) {
+        item.classList.remove('slide_shadow');
+      } else {
+        item.classList.add('slide_shadow');
+      }
+    });
     clearInterval(interval.current);
     let nextIndex;
     interval.current = setInterval(() => {

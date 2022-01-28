@@ -11,3 +11,7 @@
   list-style: none;
   padding: 0 10px;
 }
+
+.slide_shadow {
+  filter: brightness(0.5);
+}
