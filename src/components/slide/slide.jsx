@@ -83,6 +83,8 @@ const Slide = (props) => {
   const slideItem = useRef(null);
   const slideList = useRef(null);
   const interval = useRef(null);
+
+  //이미지 넘기는 함수
   const img_change = (nextIndex) => {
     slideList.current.style.transition = '200ms';
     setCurrentIndex(nextIndex);
@@ -97,10 +99,11 @@ const Slide = (props) => {
       setCurrentIndex(nextIndex);
     }, 500);
   };
+
   useEffect(() => {
     setSlideWidth(slideItem.current.getBoundingClientRect().width);
+    //slide 양 옆 어둡게 하는 함수
     const slideImages = slideList.current.querySelectorAll('.slide_item');
-    console.log(slideImages);
     slideImages.forEach((item, index) => {
       if (index === currentIndex) {
         item.classList.remove('slide_shadow');
@@ -108,6 +111,8 @@ const Slide = (props) => {
         item.classList.add('slide_shadow');
       }
     });
+
+    //이미지 자동넘김
     clearInterval(interval.current);
     let nextIndex;
     interval.current = setInterval(() => {
@@ -116,12 +121,14 @@ const Slide = (props) => {
     }, 2000);
   }, [currentIndex]);
 
+  //이미지 li로 출력
   const slidelist = slideImg.map((item) => (
     <li className='slide_item' ref={slideItem} key={item.id}>
       <img className='slide_img' src={item.image} alt='' />
     </li>
   ));
 
+  //버튼 클릭 시 이미지 넘김
   const changeImg = (e) => {
     console.log(e.target.className.includes('btn_pre'));
     let nextIndex = e.target.className.includes('btn_pre')
@@ -136,6 +143,7 @@ const Slide = (props) => {
     img_change(nextIndex);
   };
 
+  // mouseEvent
   const MouseOver = () => {
     clearInterval(interval.current);
     console.log('in');
@@ -149,6 +157,26 @@ const Slide = (props) => {
     }, 2000);
     console.log('out');
   };
+  //dreg해서 넘기기
+  let startPoint;
+  let endPoint;
+  const dragEvent = (event) => {
+    if (startPoint) {
+      endPoint = event.clientX;
+      startPoint > endPoint
+        ? (console.log('hi'), (startPoint = ''), (endPoint = ''))
+        : // setCurrentIndex(currentIndex - 1)
+          console.log('bye');
+
+      // setCurrentIndex(currentIndex + 1);
+    } else {
+      startPoint = event.clientX;
+      console.log('okey');
+    }
+    console.log(startPoint);
+    console.log(endPoint);
+  };
+
   return (
     <div className='slide'>
       <ul
@@ -156,6 +184,8 @@ const Slide = (props) => {
         ref={slideList}
         onMouseOver={MouseOver}
         onMouseLeave={MouseLeave}
+        onDragStart={dragEvent}
+        onDragEnd={dragEvent}
         style={{
           transform: `translateX(calc(${(innerWidth - slideWidth) / 2}px - ${
             slideWidth * currentIndex
