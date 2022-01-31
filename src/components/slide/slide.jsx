@@ -163,18 +163,12 @@ const Slide = (props) => {
   const dragEvent = (event) => {
     if (startPoint) {
       endPoint = event.clientX;
-      startPoint > endPoint
-        ? (console.log('hi'), (startPoint = ''), (endPoint = ''))
-        : // setCurrentIndex(currentIndex - 1)
-          console.log('bye');
-
-      // setCurrentIndex(currentIndex + 1);
+      let nextIndex =
+        startPoint > endPoint ? currentIndex + 1 : currentIndex - 1;
+      img_change(nextIndex);
     } else {
       startPoint = event.clientX;
-      console.log('okey');
     }
-    console.log(startPoint);
-    console.log(endPoint);
   };
 
   return (
