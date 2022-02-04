@@ -78,18 +78,22 @@ const slideImg = [
 const Slide = (props) => {
   const [currentIndex, setCurrentIndex] = useState(2);
   const [slideWidth, setSlideWidth] = useState(0);
+
   const innerWidth = window.innerWidth;
 
   const slideItem = useRef(null);
   const slideList = useRef(null);
   const interval = useRef(null);
-
+  let slide_change;
   //이미지 넘기는 함수
   const img_change = (nextIndex) => {
-    slideList.current.style.transition = '200ms';
+    slideList.current.style.transition = '300ms';
+    // slideList.current.style.pointerEvents = 'none';
     setCurrentIndex(nextIndex);
-    setTimeout(() => {
+    clearTimeout(slide_change);
+    slide_change = setTimeout(() => {
       slideList.current.style.transition = '0s';
+      // slideList.current.style.pointerEvents = 'all';
       nextIndex =
         nextIndex < 2
           ? slideImg.length - 3
@@ -148,7 +152,7 @@ const Slide = (props) => {
     clearInterval(interval.current);
     console.log('in');
   };
-  const MouseLeave = () => {
+  const MouseLeave = (event) => {
     clearInterval(interval.current);
     let nextIndex;
     interval.current = setInterval(() => {
@@ -156,19 +160,49 @@ const Slide = (props) => {
       img_change(nextIndex);
     }, 2000);
     console.log('out');
+    if (startPoint) {
+      dragEvent(event);
+    }
   };
-  //dreg해서 넘기기
+
+  //swiper Event
+
   let startPoint;
   let endPoint;
+  let swiperX = 0;
+  let swiperWidth = 0;
+  // let dontTouch = false;
   const dragEvent = (event) => {
+    // if (dontTouch === true) {
+    //   console.log('hi');
+    //   return;
+    // }
+    event.preventDefault();
     if (startPoint) {
+      clearTimeout(slide_change);
+
       endPoint = event.clientX;
       let nextIndex =
         startPoint > endPoint ? currentIndex + 1 : currentIndex - 1;
       img_change(nextIndex);
+      console.log('e1', endPoint);
+      // dontTouch = false;
     } else {
       startPoint = event.clientX;
+      document.onmousemove = mouse;
+      console.log('s', startPoint);
+      // dontTouch = true;
     }
+    document.onmousemove = null;
+    // }
+  };
+
+  const mouse = (e) => {
+    swiperX = e.clientX;
+    swiperWidth = startPoint - swiperX;
+    slideList.current.style.transform = `translateX(calc(${
+      (innerWidth - slideWidth) / 2
+    }px - ${slideWidth * currentIndex}px - ${swiperWidth}px))`;
   };
 
   return (
@@ -178,8 +212,8 @@ const Slide = (props) => {
         ref={slideList}
         onMouseOver={MouseOver}
         onMouseLeave={MouseLeave}
-        onDragStart={dragEvent}
-        onDragEnd={dragEvent}
+        onMouseDown={dragEvent}
+        onMouseUp={dragEvent}
         style={{
           transform: `translateX(calc(${(innerWidth - slideWidth) / 2}px - ${
             slideWidth * currentIndex
