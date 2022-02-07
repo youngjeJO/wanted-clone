@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './slide.css';
+import { debounce, set } from 'lodash';
 
 const slideImg = [
   {
@@ -78,7 +79,7 @@ const slideImg = [
 const Slide = (props) => {
   const [currentIndex, setCurrentIndex] = useState(2);
   const [slideWidth, setSlideWidth] = useState(0);
-
+  const [delay, setdelay] = useState(false);
   const innerWidth = window.innerWidth;
 
   const slideItem = useRef(null);
@@ -86,6 +87,7 @@ const Slide = (props) => {
   const interval = useRef(null);
   let slide_change;
   //이미지 넘기는 함수
+
   const img_change = (nextIndex) => {
     slideList.current.style.transition = '300ms';
     // slideList.current.style.pointerEvents = 'none';
@@ -100,6 +102,7 @@ const Slide = (props) => {
           : nextIndex === slideImg.length - 2
           ? 2
           : nextIndex;
+      setdelay(false);
       setCurrentIndex(nextIndex);
     }, 500);
   };
@@ -135,16 +138,21 @@ const Slide = (props) => {
   //버튼 클릭 시 이미지 넘김
   const changeImg = (e) => {
     console.log(e.target.className.includes('btn_pre'));
-    let nextIndex = e.target.className.includes('btn_pre')
-      ? currentIndex - 1
-      : currentIndex + 1;
-    console.log(nextIndex);
-    console.log(slideImg.length);
-    // 인덱스가 -1이 되면 slideImg.length -1
-    //  slideImg.length가 되면 인덱스 0
+    if (delay === true) {
+      return;
+    } else {
+      let nextIndex = e.target.className.includes('btn_pre')
+        ? currentIndex - 1
+        : currentIndex + 1;
+      console.log(nextIndex);
+      console.log(slideImg.length);
+      // 인덱스가 -1이 되면 slideImg.length -1
+      //  slideImg.length가 되면 인덱스 0
 
-    console.log(slideList.current);
-    img_change(nextIndex);
+      console.log(slideList.current);
+      img_change(nextIndex);
+      setdelay(true);
+    }
   };
 
   // mouseEvent
@@ -160,9 +168,9 @@ const Slide = (props) => {
       img_change(nextIndex);
     }, 2000);
     console.log('out');
-    if (startPoint) {
-      dragEvent(event);
-    }
+    // if (startPoint) {
+    //   dragEvent(event);
+    // }
   };
 
   //swiper Event
@@ -171,34 +179,39 @@ const Slide = (props) => {
   let endPoint;
   let swiperX = 0;
   let swiperWidth = 0;
-  // let dontTouch = false;
-  const dragEvent = (event) => {
-    // if (dontTouch === true) {
-    //   console.log('hi');
-    //   return;
-    // }
+
+  const mouseDownEvent = (event) => {
     event.preventDefault();
     if (startPoint) {
-      clearTimeout(slide_change);
-
-      endPoint = event.clientX;
-      let nextIndex =
-        startPoint > endPoint ? currentIndex + 1 : currentIndex - 1;
-      img_change(nextIndex);
-      console.log('e1', endPoint);
-      // dontTouch = false;
+      return;
     } else {
       startPoint = event.clientX;
-      document.onmousemove = mouse;
       console.log('s', startPoint);
-      // dontTouch = true;
     }
-    document.onmousemove = null;
-    // }
+    document.onmousemove = mouse;
   };
 
-  const mouse = (e) => {
-    swiperX = e.clientX;
+  const mouseUpEvent = (event) => {
+    let nextIndex;
+    if (startPoint) {
+      endPoint = event.clientX;
+      nextIndex =
+        startPoint === endPoint
+          ? currentIndex
+          : startPoint > endPoint
+          ? currentIndex + 1
+          : currentIndex - 1;
+      img_change(nextIndex);
+      document.onmousemove = null;
+      startPoint = undefined;
+      console.log('hi');
+    } else {
+      return;
+    }
+  };
+
+  const mouse = (event) => {
+    swiperX = event.clientX;
     swiperWidth = startPoint - swiperX;
     slideList.current.style.transform = `translateX(calc(${
       (innerWidth - slideWidth) / 2
@@ -212,8 +225,8 @@ const Slide = (props) => {
         ref={slideList}
         onMouseOver={MouseOver}
         onMouseLeave={MouseLeave}
-        onMouseDown={dragEvent}
-        onMouseUp={dragEvent}
+        onMouseDown={mouseDownEvent}
+        onMouseUp={mouseUpEvent}
         style={{
           transform: `translateX(calc(${(innerWidth - slideWidth) / 2}px - ${
             slideWidth * currentIndex
