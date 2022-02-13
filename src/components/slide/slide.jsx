@@ -168,6 +168,22 @@ const Slide = (props) => {
       img_change(nextIndex);
     }, 2000);
     console.log('out');
+    if (startPoint) {
+      endPoint = event.clientX;
+      nextIndex =
+        startPoint === endPoint
+          ? currentIndex
+          : startPoint > endPoint
+          ? currentIndex + 1
+          : currentIndex - 1;
+      img_change(nextIndex);
+      document.onmousemove = null;
+      startPoint = undefined;
+      console.log('hi');
+    } else {
+      return;
+    }
+    document.onmousemove = null;
     // if (startPoint) {
     //   dragEvent(event);
     // }
